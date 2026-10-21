@@ -5,7 +5,7 @@ import { env } from "../config/env";
 export const logger = pino({
   level: env.logLevel,
   transport: env.isProduction
-    ? undefined // in production, we don't want to use pretty print
+    ? undefined // in production, we don't want to use pino-pretty, just log in JSON format
     : {
         target: "pino-pretty",
         options: {
