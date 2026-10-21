@@ -2,6 +2,8 @@
 // express related logic added here
 import express from "express";
 import { errorHandler } from "./middlewares/errorHandler";
+import { notFound } from "./middlewares/notFound";
+
 export function createApp() {
   const app = express();
   // middleware to parse incoming JSON requests
@@ -11,4 +13,7 @@ export function createApp() {
 
   // to use the error handler we need to import it and use it as a middleware
   app.use(errorHandler);
+
+  // middleware to handle not found routes
+  app.use(notFound);
 }
