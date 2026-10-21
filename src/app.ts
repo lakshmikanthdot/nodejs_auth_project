@@ -1,11 +1,16 @@
 // entry file for express
 // express related logic added here
 import express from "express";
+import cors from "cors";
 import { errorHandler } from "./middlewares/errorHandler";
 import { notFound } from "./middlewares/notFound";
 
 export function createApp() {
   const app = express();
+
+  // middleware to enable CORS
+  app.use(cors());
+
   // middleware to parse incoming JSON requests
   // example: { "name": "John", "age": 30 } to be parsed into req.body
   // if content-type is application/json
