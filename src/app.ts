@@ -11,6 +11,11 @@ export function createApp() {
   // if content-type is application/json
   app.use(express.json());
 
+  // middleware to parse incoming urlencoded requests
+  // example: name=John&age=30 to be parsed into req.body
+  // if content-type is application/x-www-form-urlencoded
+  app.use(express.urlencoded({ extended: true }));
+
   // to use the error handler we need to import it and use it as a middleware
   app.use(errorHandler);
 
