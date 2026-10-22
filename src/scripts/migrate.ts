@@ -79,3 +79,4 @@ migrate()
     process.exit(1);
   })
   .finally(() => pool.end());
+// test commit
