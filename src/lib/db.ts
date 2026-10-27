@@ -4,4 +4,3 @@ import { env } from "../config/env";
 export const pool = new Pool({
   connectionString: env.databaseUrl,
 });
-// test commit
