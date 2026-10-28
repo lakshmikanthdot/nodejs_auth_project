@@ -8,7 +8,6 @@ import { logger } from "../lib/logger";
 const MIGRATIONS_DIR = path.join(process.cwd(), "migrations");
 
 // this migration table track which all file(user, banner etc..) we already migrated
-
 const CREATE_MIGRATIONS_TABLE_SQL = `
 CREATE TABLE IF NOT EXISTS migrations (
 id SERIAL PRIMARY KEY,
@@ -20,14 +19,17 @@ type MigrationRow = {
   name: string;
 };
 
+// get the list of executed migrations from the database
+// it will return the migrated file names
 async function getExecutedMigrations(): Promise<string[]> {
   const result = await pool.query<MigrationRow>(
     "SELECT name FROM migrations ORDER BY name",
   );
-
   return result.rows.map((row: MigrationRow) => row.name);
 }
 
+// get the list of migration files from the migrations directory
+// it will return the list of files in alphabetical order, so that we can run them in order
 function getMigrationFiles(): string[] {
   return fs
     .readdirSync(MIGRATIONS_DIR)
@@ -35,6 +37,8 @@ function getMigrationFiles(): string[] {
     .sort();
 }
 
+// run a single migration file
+// it will read the sql file and execute the sql statements in a transaction
 async function runMigration(fileName: string): Promise<void> {
   const sql = fs.readFileSync(path.join(MIGRATIONS_DIR, fileName), "utf-8");
   const client = await pool.connect();
@@ -55,6 +59,9 @@ async function runMigration(fileName: string): Promise<void> {
 }
 
 // check the migration table exists or not, if not create it
+// get the list of executed migrations from the database
+// get the list of migration files from the migrations directory
+// run the pending migrations in order
 async function migrate(): Promise<void> {
   await pool.query(CREATE_MIGRATIONS_TABLE_SQL);
 
@@ -73,6 +80,7 @@ async function migrate(): Promise<void> {
   logger.info("all migrations completed");
 }
 
+// run the migration script
 migrate()
   .catch((error) => {
     logger.error({ err: error }, "Migrations failed");
