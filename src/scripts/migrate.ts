@@ -40,11 +40,14 @@ function getMigrationFiles(): string[] {
 // run a single migration file
 // it will read the sql file and execute the sql statements in a transaction
 async function runMigration(fileName: string): Promise<void> {
+  // reading the sql file
   const sql = fs.readFileSync(path.join(MIGRATIONS_DIR, fileName), "utf-8");
+  // connecting to the database and running the migration in a transaction
   const client = await pool.connect();
 
   try {
     await client.query("BEGIN");
+    // we already filter the executed migrations, so we will get non-executed migrations here
     await client.query(sql);
     await client.query("INSERT INTO migrations (name) values ($1)", [fileName]);
     await client.query("COMMIT");
