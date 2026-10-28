@@ -74,6 +74,8 @@ async function migrate(): Promise<void> {
   }
 
   for (const fileName of pending) {
+    // actually migration is done here,
+    // we read the sql file and execute the sql statements in a transaction
     await runMigration(fileName);
   }
 
