@@ -10,6 +10,8 @@ export function errorHandler(
   res: Response,
   _next: NextFunction,
 ): void {
+  // if incase the error is an instance of AppError,
+  // we will send the status code and message back to the user
   if (err instanceof AppError) {
     res.status(err.statusCode).json({
       success: false,
