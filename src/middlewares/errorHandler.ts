@@ -17,6 +17,7 @@ export function errorHandler(
       success: false,
       message: err.message,
     });
+    return;
   }
   logger.error({ err }, "unhandled error");
   // response back to user with 500 status code and error message
