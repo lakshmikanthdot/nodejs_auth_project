@@ -62,7 +62,7 @@ export async function loginUser(
     throw new AppError(401, "Invalid email or password");
   }
   const isPasswordValid = await bcrypt.compare(password, user.password_hash);
-  if (isPasswordValid) {
+  if (!isPasswordValid) {
     throw new AppError(401, "Invalid email or password");
   }
   // if email is valid and password is valid then we will generate the access token
