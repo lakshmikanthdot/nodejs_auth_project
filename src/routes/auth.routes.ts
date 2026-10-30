@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registerUser } from "../services/auth.service";
+import { loginUser, registerUser } from "../services/auth.service";
 
 // using the express router to create a new router instance
 export const authRouter = Router();
@@ -33,3 +33,18 @@ authRouter.post("/register", async (req, res, next) => {
 });
 
 // login route
+authRouter.post("/login", async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    // when user is log in we are have to store some information
+    // he is logged in or not (validtae his authentication)
+    // we saved in the access token
+    const { accessToken } = await loginUser(email, password);
+    res.status(200).json({
+      success: true,
+      data: accessToken,
+    });
+  } catch (error) {
+    next(error);
+  }
+});

@@ -16,3 +16,10 @@ export type DBUserRow = {
 export type DBUserWithPasswordRow = DBUserRow & {
   password_hash: string | null;
 };
+
+// jwt payload type
+export type TokenPayload = {
+  userId: string;
+  email: string;
+  role: string;
+};

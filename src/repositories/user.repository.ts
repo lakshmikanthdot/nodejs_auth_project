@@ -2,7 +2,7 @@
 // means any db related logic will be added here
 
 import { pool } from "../lib/db";
-import { DBUserRow, User } from "../types/user";
+import { DBUserRow, DBUserWithPasswordRow, User } from "../types/user";
 
 // find the user by email
 // we will use in the auth.service.ts file to check
@@ -29,4 +29,19 @@ export async function createUser(
     [email, passwordHash],
   );
   return result.rows[0];
+}
+
+// login
+// find the user by email and password
+export async function findLoginUserByEmailWithPassword(
+  email: string,
+): Promise<DBUserWithPasswordRow> {
+  // first we will find the user by email in the database
+  const result = await pool.query<DBUserWithPasswordRow>(
+    `SELECT id, email, role, created_at, password_hash
+     FROM users
+     WHERE email = $1`,
+    [email],
+  );
+  return result.rows[0] ?? null;
 }
