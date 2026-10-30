@@ -40,9 +40,10 @@ authRouter.post("/login", async (req, res, next) => {
     // he is logged in or not (validtae his authentication)
     // we saved in the access token
     const { accessToken } = await loginUser(email, password);
+    console.log("accessToken", accessToken);
     res.status(200).json({
       success: true,
-      data: accessToken,
+      data: { accessToken },
     });
   } catch (error) {
     next(error);
