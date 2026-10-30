@@ -6,6 +6,7 @@ export const authRouter = Router();
 
 // register routes
 
+// singup route
 authRouter.post("/register", async (req, res, next) => {
   try {
     // when user is sending the email and password in the request body,
@@ -30,3 +31,5 @@ authRouter.post("/register", async (req, res, next) => {
     next(error);
   }
 });
+
+// login route
