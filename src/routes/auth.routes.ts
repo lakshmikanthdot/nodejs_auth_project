@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { loginUser, registerUser } from "../services/auth.service";
+import { authenticate } from "../middlewares/auth.middleware";
 
 // using the express router to create a new router instance
 export const authRouter = Router();
@@ -47,4 +48,17 @@ authRouter.post("/login", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+});
+
+// get the current user information
+// untill unless logged in we cannot get the user information
+// so we will use the authenticate middleware to check if the user is logged in or not
+// protect your routes
+authRouter.get("/me", authenticate, (req, res) => {
+  res.status(200).json({
+    success: true,
+    data: {
+      user: req.user,
+    },
+  });
 });
