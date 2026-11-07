@@ -2,6 +2,7 @@ import { Router } from "express";
 import { authenticate } from "../middlewares/auth.middleware";
 import {
   createuserTask,
+  deleteUserTask,
   getUserTaskById,
   getUserTasks,
   updateUserTask,
@@ -80,6 +81,20 @@ userTaskRouter.patch("/:taskId", async (req, res, next) => {
       data: {
         task,
       },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// delete the task by id for the logged in user
+// using the delete method because we are deleting the task
+userTaskRouter.delete("/:taskId", async (req, res, next) => {
+  try {
+    await deleteUserTask(req.params.taskId, req.user!.userId);
+    res.status(200).json({
+      success: true,
+      message: "Task deleted successfully",
     });
   } catch (error) {
     next(error);

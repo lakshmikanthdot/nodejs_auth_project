@@ -4,6 +4,7 @@ import {
   fetchTaskByUserId,
   findTaskByTaskIdandUserId,
   updateTaskTitle,
+  deleteTask,
 } from "../repositories/user.task.repository";
 import { Task } from "../types/task";
 
@@ -57,4 +58,15 @@ export async function updateUserTask(
     throw new AppError(404, "Task not found");
   }
   return task;
+}
+
+// delete the task by id for the logged in user
+export async function deleteUserTask(
+  taskId: string,
+  userId: string,
+): Promise<void> {
+  const deleted = await deleteTask(taskId, userId);
+  if (!deleted) {
+    throw new AppError(404, "Task not found");
+  }
 }
