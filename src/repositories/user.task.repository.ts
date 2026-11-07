@@ -29,3 +29,19 @@ export async function fetchTaskByUserId(userId: string): Promise<Task[]> {
   // we have multiple rows, so we return an array of tasks
   return result.rows;
 }
+
+// get single task by id for the logged in user|
+export async function findTaskByTaskIdandUserId(
+  userId: string,
+  taskId: string,
+): Promise<Task | null> {
+  const result = await pool.query<TaskRow>(
+    `
+        SELECT *
+        FROM support_tasks
+        WHERE user_id = $1 AND id = $2
+        `,
+    [userId, taskId],
+  );
+  return result.rows[0] ?? null;
+}

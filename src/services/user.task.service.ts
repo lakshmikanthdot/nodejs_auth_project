@@ -2,6 +2,7 @@ import { AppError } from "../errors/AppError";
 import {
   createTask,
   fetchTaskByUserId,
+  findTaskByTaskIdandUserId,
 } from "../repositories/user.task.repository";
 import { Task } from "../types/task";
 
@@ -29,4 +30,16 @@ export async function createuserTask(
 // get the tasks for the logged in user
 export async function getUserTasks(userId: string): Promise<Task[]> {
   return fetchTaskByUserId(userId);
+}
+
+// single task by id for the logged in user
+export async function getUserTaskById(
+  userId: string,
+  taskId: string,
+): Promise<Task> {
+  const task = await findTaskByTaskIdandUserId(userId, taskId);
+  if (!task) {
+    throw new AppError(404, "Task not found");
+  }
+  return task;
 }

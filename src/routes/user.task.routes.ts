@@ -1,6 +1,10 @@
 import { Router } from "express";
 import { authenticate } from "../middlewares/auth.middleware";
-import { createuserTask, getUserTasks } from "../services/user.task.service";
+import {
+  createuserTask,
+  getUserTaskById,
+  getUserTasks,
+} from "../services/user.task.service";
 
 export const userTaskRouter = Router();
 
@@ -35,6 +39,25 @@ userTaskRouter.get("/", async (req, res, next) => {
       success: true,
       data: {
         tasks,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// fetch single task
+// using the dynamic api route parameter ":taskId" to fetch a single task by its ID
+// we get that taskId from the req.params object,
+// which is an object that contains all the route parameters defined in the route path
+userTaskRouter.get("/:taskId", async (req, res, next) => {
+  try {
+    const taskId = req.params.taskId;
+    const task = await getUserTaskById(req.user!.userId, taskId);
+    res.status(200).json({
+      success: true,
+      data: {
+        task,
       },
     });
   } catch (error) {
