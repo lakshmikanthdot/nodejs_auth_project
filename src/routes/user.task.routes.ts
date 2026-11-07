@@ -4,6 +4,7 @@ import {
   createuserTask,
   getUserTaskById,
   getUserTasks,
+  updateUserTask,
 } from "../services/user.task.service";
 
 export const userTaskRouter = Router();
@@ -54,6 +55,26 @@ userTaskRouter.get("/:taskId", async (req, res, next) => {
   try {
     const taskId = req.params.taskId;
     const task = await getUserTaskById(req.user!.userId, taskId);
+    res.status(200).json({
+      success: true,
+      data: {
+        task,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// update the task by id for the logged in user
+// using the patch method because we are updating only the title of the task
+userTaskRouter.patch("/:taskId", async (req, res, next) => {
+  try {
+    const task = await updateUserTask(
+      req.params.taskId,
+      req.user!.userId,
+      req.body.title,
+    );
     res.status(200).json({
       success: true,
       data: {

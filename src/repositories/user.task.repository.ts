@@ -45,3 +45,21 @@ export async function findTaskByTaskIdandUserId(
   );
   return result.rows[0] ?? null;
 }
+
+// update the task by id for the logged in user patch
+export async function updateTaskTitle(
+  taskId: string,
+  userId: string,
+  title: string,
+): Promise<Task | null> {
+  const result = await pool.query<TaskRow>(
+    `
+    UPDATE support_tasks
+    SET title = $1, updated_at = NOW()
+    WHERE id = $2 AND user_id = $3
+    RETURNING *
+    `,
+    [title, taskId, userId],
+  );
+  return result.rows[0] ?? null;
+}
