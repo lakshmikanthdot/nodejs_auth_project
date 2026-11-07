@@ -14,3 +14,18 @@ export async function createTask(userId: string, title: string): Promise<Task> {
   );
   return result.rows[0];
 }
+
+// get the tasks for the logged in user
+export async function fetchTaskByUserId(userId: string): Promise<Task[]> {
+  const result = await pool.query<TaskRow>(
+    `
+        SELECT * 
+        FROM support_tasks
+        WHERE user_id = $1
+        ORDER BY created_at DESC
+        `,
+    [userId],
+  );
+  // we have multiple rows, so we return an array of tasks
+  return result.rows;
+}

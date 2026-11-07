@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authenticate } from "../middlewares/auth.middleware";
-import { createuserTask } from "../services/user.task.service";
+import { createuserTask, getUserTasks } from "../services/user.task.service";
 
 export const userTaskRouter = Router();
 
@@ -12,6 +12,7 @@ export const userTaskRouter = Router();
 userTaskRouter.use(authenticate);
 
 // all the routes below are protected by the authenticate middleware
+// create the task for the logged in user
 userTaskRouter.post("/", async (req, res, next) => {
   try {
     const task = await createuserTask(req.user!.userId, req.body.title);
@@ -19,6 +20,21 @@ userTaskRouter.post("/", async (req, res, next) => {
       success: true,
       data: {
         task,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// fetch all the tasks for the logged in user
+userTaskRouter.get("/", async (req, res, next) => {
+  try {
+    const tasks = await getUserTasks(req.user!.userId);
+    res.status(200).json({
+      success: true,
+      data: {
+        tasks,
       },
     });
   } catch (error) {
