@@ -1,6 +1,9 @@
 // admin routes for task management
 import { AppError } from "../errors/AppError";
-import { findAlltasks } from "../repositories/admin.task.repository";
+import {
+  findAlltasks,
+  updateTaskStatus,
+} from "../repositories/admin.task.repository";
 import { Task } from "../types/task";
 
 // search query and filter query for admin tasks
@@ -25,6 +28,7 @@ type TaskStatus = (typeof statusList)[number];
 // query parameter
 // localhost:4000/admin/tasks?search=first (key is search and value is first)
 // all thoose task where title starts with first
+
 export async function getAdminTasks(
   query: AdminTaskListQuery,
 ): Promise<AdminTaskListResponse> {
@@ -47,4 +51,26 @@ export async function getAdminTasks(
   return {
     tasks,
   };
+}
+
+// admin update the task status of any user
+
+export async function updateAdminTaskStatus(
+  taskId: string,
+  status: unknown,
+): Promise<Task> {
+  if (
+    typeof status !== "string" ||
+    !statusList.includes(status as TaskStatus)
+  ) {
+    throw new AppError(
+      400,
+      "status must be between open, inprogress, resolved",
+    );
+  }
+  const task = await updateTaskStatus(taskId, status);
+  if (!task) {
+    throw new AppError(404, "Task not found");
+  }
+  return task;
 }
